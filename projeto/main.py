@@ -1,6 +1,6 @@
 from projeto.persistence.mongodb.mongodb_config import MongoDBConfig
 from projeto.controllers.document_controller import DocumentController
-from projeto.views.tui import TUI
+from projeto.tui import TUI
 
 def main():
     # Configuração do MongoDB
@@ -12,7 +12,7 @@ def main():
 
     # Inicialização da TUI
     app = TUI(mongodb_config)
-    app.executar()
+    app.run()
 
 if __name__ == "__main__":
     main()
