@@ -1,16 +1,18 @@
 from projeto.services.document_service import DocumentService
 from projeto.models.document import Document
+from projeto.utils.text_utils import extract_text
 
 class DocumentController:
     def __init__(self, mongo_config):
         self.document_service = DocumentService(mongo_config)
 
-    def insert_document(self, titulo, autor, idioma):
+    def insert_document(self, titulo, autor, idioma, filepath, source):
         """ Insere um novo documento """
-        document = Document(titulo, autor, idioma)
+        text = extract_text(filepath) 
+        document = Document(titulo, autor, idioma, filepath, source, text)
         success, message = self.document_service.insert_document(document)
         return success, message
-
+        
     def list_documents(self):
         """ Lista todos os documentos """
         return self.document_service.list_documents()

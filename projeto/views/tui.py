@@ -5,7 +5,6 @@ class TUI:
         self.doc_controller = DocumentController(mongo_config)
         self.mongo_config = mongo_config
 
-
     def mostrar_menu(self):
         print("\n=== Menu ===")
         print("1. Inserir Documento")
@@ -32,38 +31,61 @@ class TUI:
         title = input("Título do Documento: ")
         author = input("Autor do Documento: ")
         language = input("Idioma do Documento: ")
-        
-        success, message = self.doc_controller.insert_document(title, author,language)
+        filepath = input("Path do Arquivo de Documento: ")
+        source = input("Url da fonte do Documento, se aplicável: ")
+        success, message = self.doc_controller.insert_document(title, author, language, filepath, source)
+
         if success:
             print(f'\n{message}')
         else:
             print(f"Erro ao inserir documento: {message}")
 
+
     def listar_documentos(self):
         documentos = self.doc_controller.list_documents()
         print("\nDocumentos Cadastrados:\n")
-        for documento in documentos:
-            print(f'{documento}\n')
+        for idx, documento in enumerate(documentos):
+            print(f'{idx + 1}. {documento.title} - {documento.author}\n')
+
+        escolha = input("\nDigite o número do documento para visualizar mais detalhes ou 'v' para voltar ao menu principal: ")
+        
+        if escolha.lower() == 'v':
+            return
+        else:
+            try:
+                escolha_idx = int(escolha) - 1
+                if 0 <= escolha_idx < len(documentos):
+                    self.visualizar_documento(documentos[escolha_idx])
+                else:
+                    print("Opção inválida.")
+            except ValueError:
+                print("Entrada inválida.")
+
+    def visualizar_documento(self, documento):
+        print("\nDetalhes do Documento:\n")
+        print(documento)
         
         print("\nEscolha uma opção:\n")
-        print("1. Atualizar Documento")
-        print("2. Deletar Documento")
-        print("3. Voltar ao Menu Principal\n")
+        print("1. Visualizar Texto do Documento")
+        print("2. Atualizar Documento")
+        print("3. Deletar Documento")
+        print("4. Voltar ao Menu Principal\n")
         opcao = input("Opção: ")
-        
+
         if opcao == '1':
-            self.atualizar_documento()
+            print(f'Conteúdo:\n\n{documento.text}')
         elif opcao == '2':
-            self.deletar_documento()
+            self.atualizar_documento(documento._id)
         elif opcao == '3':
+            self.deletar_documento(documento._id)
+        elif opcao == '4':
             return
         else:
             print("Opção inválida. Retornando ao menu principal.")
-    
-    def atualizar_documento(self):
-        document_id = input("\nInforme o ID do documento a ser atualizado: ")
+
+    def atualizar_documento(self, document_id):
         documento = self.doc_controller.get_document_by_id(document_id)
-        
+
         if documento:
             print(f"\nDocumento encontrado:\n\n{documento}\n")
             field = input("\nInforme o campo a ser atualizado (ex. title, author, language): ")
@@ -77,11 +99,10 @@ class TUI:
                 print(f"Erro: {message}")
         else:
             print("Documento não encontrado.")
-    
-    def deletar_documento(self):
-        document_id = input("\nInforme o ID do documento a ser deletado: ")
+
+    def deletar_documento(self, document_id):
         documento = self.doc_controller.get_document_by_id(document_id)
-        
+
         if documento:
             print(f"\nDocumento encontrado:\n\n{documento}\n")
             confirmacao = input("\nTem certeza que deseja deletar este documento? (s/n): ")

@@ -15,7 +15,18 @@ class DocumentRepository:
 
     def list_documents(self):
         documents = self.collection.find()
-        return [Document(doc['title'], doc['author'], doc['language'], doc['_id']) for doc in documents]
+        return [Document(
+            doc['title'],
+            doc['author'],
+            doc['language'],
+            doc['filepath'],
+            doc['source'],
+            doc['text'],
+            num_paragraphs=doc.get('num_paragraphs'),
+            num_pages=doc.get('num_pages'),
+            created_at=doc.get('created_at'),
+            _id=doc['_id']
+        ) for doc in documents]
 
     def update_document(self, document_id, field, new_value):
         """ Atualiza um campo específico de um documento no MongoDB """
@@ -33,6 +44,6 @@ class DocumentRepository:
     def get_document_by_id(self, document_id):
         doc = self.collection.find_one({'_id': ObjectId(document_id)})
         if doc:
-            return Document(doc['title'], doc['author'], doc['language'], doc['_id'])
+            return Document(doc['title'], doc['author'], doc['language'], doc['filepath'], doc['source'], doc['text'], doc['num_paragraphs'], doc['num_pages'], doc['created_at'], doc['_id'])
         else:
             return None
