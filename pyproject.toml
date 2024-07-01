@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "projeto"
+version = "0.1.0"
+description = ""
+authors = ["Thiago Ribeiro <mackandalls@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.10.13"
+deep-translator = "^1.11.4"
+nltk = "^3.8.1"
+spacy = "^3.7.5"
+pymongo = "^4.8.0"
+textual = "^0.70.0"
+textual-dev = "^1.5.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
