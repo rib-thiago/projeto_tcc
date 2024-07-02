@@ -1,5 +1,8 @@
+# main.py
+
 from projeto.persistence.mongodb.mongodb_config import MongoDBConfig
 from projeto.controllers.document_controller import DocumentController
+from projeto.controllers.paragraph_controller import ParagraphController
 from projeto.tui import TUI
 
 def main():
@@ -11,7 +14,9 @@ def main():
     paragraphs_collection = mongodb_config.get_collection('paragraphs')
 
     # Inicialização da TUI
-    app = TUI(mongodb_config)
+    doc_controller = DocumentController(mongodb_config)
+    para_controller = ParagraphController(mongodb_config)
+    app = TUI(doc_controller, para_controller)
     app.run()
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 class DocumentDeleteView:
-    def __init__(self, doc_controller, documento):
+    def __init__(self, doc_controller, para_controller, documento):
         self.doc_controller = doc_controller
+        self.para_controller = para_controller
         self.documento = documento
 
     def display(self):
@@ -16,4 +17,4 @@ class DocumentDeleteView:
             print("Exclusão cancelada.")
 
         input("Pressione Enter para voltar ao menu principal...")
-        return MainMenuView(self.doc_controller)
+        return MainMenuView(self.doc_controller, self.para_controller)

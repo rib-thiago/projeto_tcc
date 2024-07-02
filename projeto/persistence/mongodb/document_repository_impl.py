@@ -22,6 +22,7 @@ class DocumentRepository:
             doc['filepath'],
             doc['source'],
             doc['text'],
+            paragraphs=doc.get('paragraphs', []),  # Corrigido para acessar corretamente 'paragraphs'
             num_paragraphs=doc.get('num_paragraphs'),
             num_pages=doc.get('num_pages'),
             created_at=doc.get('created_at'),
@@ -44,6 +45,6 @@ class DocumentRepository:
     def get_document_by_id(self, document_id):
         doc = self.collection.find_one({'_id': ObjectId(document_id)})
         if doc:
-            return Document(doc['title'], doc['author'], doc['language'], doc['filepath'], doc['source'], doc['text'], doc['num_paragraphs'], doc['num_pages'], doc['created_at'], doc['_id'])
+            return Document(doc['title'], doc['author'], doc['language'], doc['filepath'], doc['source'], doc['text'], doc['paragraphs'], doc['num_paragraphs'], doc['num_pages'], doc['created_at'], doc['_id'])
         else:
             return None

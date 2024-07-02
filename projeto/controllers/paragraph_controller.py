@@ -1,13 +1,19 @@
-from projeto.services.translation_service import TranslationService
+from projeto.services.paragraph_service import ParagraphService
+from projeto.models.paragraph import Paragraph
+
 
 class ParagraphController:
-    def __init__(self):
-        self.translation_service = TranslationService()
+    def __init__(self, mongo_config):
+        self.paragraph_service = ParagraphService(mongo_config)
 
-    def translate_paragraph(self, paragraph_id, translation_data):
-        """ Realiza a tradução de um parágrafo """
-        return self.translation_service.translate_paragraph(paragraph_id, translation_data)
+    def insert_paragraphs(self, paragraphs, document_id):
+        for num_paragraph, content in enumerate(paragraphs):
+            paragraph = Paragraph(document_id=document_id, content=content, num_paragraph=num_paragraph)
+            success, message = self.paragraph_service.insert_paragraph(paragraph)
+            if not success:
+                return False, message
+        return True, "All paragraphs inserted successfully"
 
-    def list_paragraphs_to_translate(self, document_id):
-        """ Lista os parágrafos de um documento que ainda não foram traduzidos """
-        return self.translation_service.list_paragraphs_to_translate(document_id)
+    def count_paragraphs_by_doc_id(self, doc_id):
+        return self.paragraph_service.count_paragraphs_by_doc_id(doc_id)
+

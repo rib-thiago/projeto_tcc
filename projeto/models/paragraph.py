@@ -1,24 +1,23 @@
+from bson import ObjectId
+
 class Paragraph:
-    def __init__(self, document_id, content, translated_content=None, translated_by=None, translation_engine=None,
-                source_language=None, target_language=None):
+    def __init__(self, num_paragraph, content, document_id, translated_content=None, _id=None):
+        self._id = _id if _id else ObjectId()
         self.document_id = document_id
         self.content = content
+        self.num_paragraph= num_paragraph
         self.translated_content = translated_content
-        self.translated_by = translated_by
-        self.translation_engine = translation_engine
-        self.source_language = source_language
-        self.target_language = target_language
+        self.translated = False
 
     def to_dict(self):
         """ Converte o objeto Paragraph para um dicionário """
         return {
+            '_id': self._id,
             'document_id': self.document_id,
             'content': self.content,
+            'num_paragraph': self.num_paragraph,
             'translated_content': self.translated_content,
-            'translated_by': self.translated_by,
-            'translation_engine': self.translation_engine,
-            'source_language': self.source_language,
-            'target_language': self.target_language
+            'translated': self.translated
         }
 
     @classmethod
@@ -27,9 +26,9 @@ class Paragraph:
         return cls(
             document_id=para_dict['document_id'],
             content=para_dict['content'],
+            num_paragraph=para_dict.get['num_paragraph'],
+            _id=para_dict.get('_id'),
             translated_content=para_dict.get('translated_content'),
-            translated_by=para_dict.get('translated_by'),
-            translation_engine=para_dict.get('translation_engine'),
-            source_language=para_dict.get('source_language'),
-            target_language=para_dict.get('target_language')
+            translated=para_dict.get('translated')
         )
+

@@ -1,18 +1,22 @@
 from projeto.persistence.mongodb.mongodb_config import MongoDBConfig
 from projeto.models.paragraph import Paragraph
+from bson import ObjectId
 
 class ParagraphRepository:
-    def __init__(self):
-        self.mongo_config = MongoDBConfig()
-        self.mongo_config.connect()
+    def __init__(self, mongo_config):
+        self.mongo_config = mongo_config
         self.collection = self.mongo_config.get_collection('paragraphs')
 
-    def translate_paragraph(self, paragraph_id, translation_data):
-        """ Realiza a tradução de um parágrafo e salva no MongoDB """
-        result = self.collection.update_one({'_id': paragraph_id}, {'$set': translation_data})
-        return result.modified_count
+    def insert_paragraph(self, paragraph):
+        """ Insere um novo documento no MongoDB """
+        para_dict = paragraph.to_dict()
+        result = self.collection.insert_one(para_dict)
+        return result.inserted_id
 
-    def list_paragraphs_to_translate(self, document_id):
-        """ Lista os parágrafos de um documento que ainda não foram traduzidos """
-        paragraphs = list(self.collection.find({'document_id': document_id, 'translated_content': None}))
-        return [Paragraph.from_dict(para) for para in paragraphs]
+    def count_paragraphs_by_doc_id(self, doc_id):
+        """ Conta o número de parágrafos com um determinado doc_id """
+        return self.collection.count_documents({'document_id': ObjectId(doc_id)})
+
+    def list_paragraphs_by_doc_id(self, doc_id):
+        """ Lista todos os parágrafos com um determinado doc_id """
+        return list(self.collection.find({'document_id': ObjectId(doc_id)}))

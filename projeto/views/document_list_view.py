@@ -1,6 +1,7 @@
 class DocumentListView:
-    def __init__(self, doc_controller):
+    def __init__(self, doc_controller, para_controller):
         self.doc_controller = doc_controller
+        self.para_controller = para_controller
 
     def display(self):
         from projeto.views.main_menu_view import MainMenuView
@@ -14,12 +15,12 @@ class DocumentListView:
         
         if escolha.lower() == 'v':
             input("Pressione Enter para voltar ao menu principal...")
-            return MainMenuView(self.doc_controller) 
+            return MainMenuView(self.doc_controller, self.para_controller) 
         else:
             try:
                 escolha_idx = int(escolha) - 1
                 if 0 <= escolha_idx < len(documentos):
-                    return DocumentDetailView(self.doc_controller, documentos[escolha_idx])
+                    return DocumentDetailView(self.doc_controller, self.para_controller, documentos[escolha_idx])
                 else:
                     print("Opção inválida.")
                     return self

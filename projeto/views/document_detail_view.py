@@ -1,10 +1,7 @@
-
-
-
-
 class DocumentDetailView:
-    def __init__(self, doc_controller, documento):
+    def __init__(self, doc_controller, para_controller, documento):
         self.doc_controller = doc_controller
+        self.para_controller = para_controller
         self.documento = documento
 
     def display(self):
@@ -23,14 +20,14 @@ class DocumentDetailView:
         opcao = input("Opção: ")
 
         if opcao == '1':
-            return DocumentContentView(self.doc_controller, self.documento)
+            return DocumentContentView(self.doc_controller, self.para_controller, self.documento)
         elif opcao == '2':
-            return DocumentUpdateView(self.doc_controller, self.documento)
+            return DocumentUpdateView(self.doc_controller, self.para_controller, self.documento)
         elif opcao == '3':
-            return DocumentDeleteView(self.doc_controller, self.documento)
+            return DocumentDeleteView(self.doc_controller, self.para_controller, self.documento)
         elif opcao == '4':
             input("Pressione Enter para voltar ao menu principal...")
-            return MainMenuView(self.doc_controller) 
+            return MainMenuView(self.doc_controller, self.para_controller) 
 
         else:
             print("Opção inválida. Retornando ao menu principal.")

@@ -6,6 +6,6 @@ def extract_text(filepath):
     file_content = read_file(filepath)
     return file_content
 
-def extract_paragraphs(text_content):
-    # Implemente a lógica para extrair parágrafos do texto (exemplo básico)
-    return text_content.split('\n\n')  # Exemplo simples, pode ser mais robusto dependendo da estrutura do texto
+def extract_paragraphs(text):
+        paragraphs = text.split('\n\n')
+        return [para.strip() for para in paragraphs if para.strip()]

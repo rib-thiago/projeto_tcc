@@ -2,8 +2,9 @@ from projeto.utils.text_utils import extract_paragraphs
 
 
 class DocumentContentView:
-    def __init__(self, doc_controller, documento, start_paragraph=0, paragraphs_per_page=5):
+    def __init__(self, doc_controller, para_controller, documento, start_paragraph=0, paragraphs_per_page=5):
         self.doc_controller = doc_controller
+        self.para_controller = para_controller
         self.documento = documento
         self.start_paragraph = start_paragraph
         self.paragraphs_per_page = paragraphs_per_page
@@ -12,8 +13,6 @@ class DocumentContentView:
         from projeto.views.document_detail_view import DocumentDetailView
         paragraphs = extract_paragraphs(self.documento.text)
         total_paragraphs = len(paragraphs)
-        print(f'TOTAL DE PARAGRAFOS: {total_paragraphs}')
-
 
         while True:
             end_paragraph = min(self.start_paragraph + self.paragraphs_per_page, total_paragraphs)
@@ -26,7 +25,7 @@ class DocumentContentView:
             if end_paragraph >= total_paragraphs:
                 print("Você chegou ao final do documento.")
                 input("Pressione Enter para voltar aos detalhes do documento.")
-                return DocumentDetailView(self.doc_controller, self.documento)
+                return DocumentDetailView(self.doc_controller, self.para_controller, self.documento)
 
             print("1. Ver mais parágrafos")
             print("2. Voltar aos detalhes do documento")
@@ -40,6 +39,6 @@ class DocumentContentView:
                     return DocumentDetailView(self.doc_controller, self.documento)
             elif opcao == '2':
                 input("Pressione Enter para voltar aos detalhes do documento.")
-                return DocumentDetailView(self.doc_controller, self.documento)
+                return DocumentDetailView(self.doc_controller, self.para_controller, self.documento)
             else:
                 print("Opção inválida.")
