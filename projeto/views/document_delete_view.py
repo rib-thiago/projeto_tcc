@@ -1,20 +1,22 @@
-class DocumentDeleteView:
-    def __init__(self, doc_controller, para_controller, documento):
-        self.doc_controller = doc_controller
-        self.para_controller = para_controller
-        self.documento = documento
+from projeto.views.base_view import BaseView
+
+
+class DocumentDeleteView(BaseView):
+    def __init__(self, view_manager, document):
+        super().__init__(view_manager)
+        self.document = document
 
     def display(self):
-        from projeto.views.main_menu_view import MainMenuView
         confirmacao = input("\nTem certeza que deseja deletar este documento? (s/n): ")
         if confirmacao.lower() == 's':
-            success, message = self.doc_controller.delete_document(self.documento._id)
+            success, message = self.get_doc_controller().delete_document(self.document._id)
             if success:
-                print("\nDocumento deletado com sucesso.\n")
+                print(f'\n{message}')
+                input("Pressione Enter para voltar à lista de documentos...")
+                return self.view_manager.get_view('DocumentListView')
             else:
-                print(f"Erro: {message}")
+                print(f"Erro ao deletar documento: {message}")
+                input("Pressione Enter para voltar aos detalhes do documento...")
+                return self.view_manager.get_view('DocumentDetailView', self.document)
         else:
-            print("Exclusão cancelada.")
-
-        input("Pressione Enter para voltar ao menu principal...")
-        return MainMenuView(self.doc_controller, self.para_controller)
+            return self.view_manager.get_view('DocumentDetailView', self.document)

@@ -1,17 +1,16 @@
 from projeto.utils.text_utils import extract_paragraphs
+from projeto.views.base_view import BaseView
 
 
-class DocumentContentView:
-    def __init__(self, doc_controller, para_controller, documento, start_paragraph=0, paragraphs_per_page=5):
-        self.doc_controller = doc_controller
-        self.para_controller = para_controller
-        self.documento = documento
+class DocumentContentView(BaseView):
+    def __init__(self, view_manager, document, start_paragraph=0, paragraphs_per_page=5):
+        super().__init__(view_manager)
+        self.document = document
         self.start_paragraph = start_paragraph
         self.paragraphs_per_page = paragraphs_per_page
 
     def display(self):
-        from projeto.views.document_detail_view import DocumentDetailView
-        paragraphs = extract_paragraphs(self.documento.text)
+        paragraphs = extract_paragraphs(self.document.text)
         total_paragraphs = len(paragraphs)
 
         while True:
@@ -25,7 +24,7 @@ class DocumentContentView:
             if end_paragraph >= total_paragraphs:
                 print("Você chegou ao final do documento.")
                 input("Pressione Enter para voltar aos detalhes do documento.")
-                return DocumentDetailView(self.doc_controller, self.para_controller, self.documento)
+                return self.view_manager.get_view('DocumentDetailView', self.document)
 
             print("1. Ver mais parágrafos")
             print("2. Voltar aos detalhes do documento")
@@ -36,9 +35,9 @@ class DocumentContentView:
                 if self.start_paragraph >= total_paragraphs:
                     print("Você já visualizou todos os parágrafos.")
                     input("Pressione Enter para voltar aos detalhes do documento.")
-                    return DocumentDetailView(self.doc_controller, self.documento)
+                    return self.view_manager.get_view('DocumentDetailView', self.document)
             elif opcao == '2':
                 input("Pressione Enter para voltar aos detalhes do documento.")
-                return DocumentDetailView(self.doc_controller, self.para_controller, self.documento)
+                return self.view_manager.get_view('DocumentDetailView', self.document)
             else:
                 print("Opção inválida.")

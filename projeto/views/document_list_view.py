@@ -1,29 +1,17 @@
-class DocumentListView:
-    def __init__(self, doc_controller, para_controller):
-        self.doc_controller = doc_controller
-        self.para_controller = para_controller
+from projeto.views.base_view import BaseView
 
+class DocumentListView(BaseView):
     def display(self):
-        from projeto.views.main_menu_view import MainMenuView
-        from projeto.views.document_detail_view import DocumentDetailView
-        documentos = self.doc_controller.list_documents()
-        print("\nDocumentos Cadastrados:\n")
-        for idx, documento in enumerate(documentos):
-            print(f'{idx + 1}. {documento.title} - {documento.author}\n')
+        documents = self.get_doc_controller().list_documents()
 
-        escolha = input("\nDigite o número do documento para visualizar mais detalhes ou 'v' para voltar ao menu principal: ")
-        
-        if escolha.lower() == 'v':
-            input("Pressione Enter para voltar ao menu principal...")
-            return MainMenuView(self.doc_controller, self.para_controller) 
+        print("\n=== Lista de Documentos ===")
+        for idx, doc in enumerate(documents):
+            print(f"{idx + 1}. {doc.title}")
+
+        escolha = input("\nEscolha um documento pelo número ou pressione Enter para voltar: ")
+
+        if escolha.isdigit() and 1 <= int(escolha) <= len(documents):
+            escolha_idx = int(escolha) - 1
+            return self.view_manager.get_view('DocumentDetailView', documents[escolha_idx])
         else:
-            try:
-                escolha_idx = int(escolha) - 1
-                if 0 <= escolha_idx < len(documentos):
-                    return DocumentDetailView(self.doc_controller, self.para_controller, documentos[escolha_idx])
-                else:
-                    print("Opção inválida.")
-                    return self
-            except ValueError:
-                print("Entrada inválida.")
-                return self
+            return self.view_manager.get_view('MainMenuView')
