@@ -1,3 +1,5 @@
+import os  # Importe o módulo os para poder limpar a tela
+
 class ViewManager:
     def __init__(self, doc_controller, para_controller):
         self.doc_controller = doc_controller
@@ -16,4 +18,8 @@ class ViewManager:
     def start(self, initial_view):
         current_view = initial_view
         while current_view:
+            self.clear_screen()  # Limpa a tela antes de exibir a nova view
             current_view = current_view.display()
+
+    def clear_screen(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
