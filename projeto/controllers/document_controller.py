@@ -25,9 +25,6 @@ class DocumentController:
 
 
 
-
-
-
     def list_documents(self):
         """ Lista todos os documentos """
         return self.document_service.list_documents()
