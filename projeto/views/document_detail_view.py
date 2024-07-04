@@ -33,11 +33,13 @@ class DocumentDetailView(BaseView):
         options_text.append("\n")
         options_text.append("[1] Visualizar Texto do Documento", style="bold")
         options_text.append("\n")
-        options_text.append("[2] Atualizar Dados do Documento", style="bold")
+        options_text.append("[2] Visualizar Paragráfos do Documento", style="bold")
         options_text.append("\n")
-        options_text.append("[3] Deletar Documento", style="bold")
+        options_text.append("[3] Atualizar Dados do Documento", style="bold")
         options_text.append("\n")
-        options_text.append("[4] Voltar ao Menu Principal", style="bold")
+        options_text.append("[4] Deletar Documento", style="bold")
+        options_text.append("\n")
+        options_text.append("[5] Voltar ao Menu Principal", style="bold")
 
         console.print(Panel(options_text, title="Escolha uma opção", style="green on black", width=100))
 
@@ -48,10 +50,12 @@ class DocumentDetailView(BaseView):
         if opcao == '1':
             return self.view_manager.get_view('DocumentContentView', self.documento)
         elif opcao == '2':
-            return self.view_manager.get_view('DocumentUpdateView', self.documento)
+            return self.view_manager.get_view('DocumentParagraphListView', self.documento)
         elif opcao == '3':
-            return self.view_manager.get_view('DocumentDeleteView', self.documento)
+            return self.view_manager.get_view('DocumentUpdateView', self.documento)
         elif opcao == '4':
+            return self.view_manager.get_view('DocumentDeleteView', self.documento)
+        elif opcao == '5':
             console.print(Panel(f'Pressione Enter para voltar à lista de documentos...', style="green on black", width=100))
             input("")
             return self.view_manager.get_view('MainMenuView')

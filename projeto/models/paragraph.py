@@ -1,13 +1,13 @@
 from bson import ObjectId
 
 class Paragraph:
-    def __init__(self, num_paragraph, content, document_id, translated_content=None, _id=None):
+    def __init__(self, num_paragraph, content, document_id, translated=False, translated_content=None, _id=None):
         self._id = _id if _id else ObjectId()
         self.document_id = document_id
         self.content = content
         self.num_paragraph= num_paragraph
         self.translated_content = translated_content
-        self.translated = False
+        self.translated = translated
 
     def to_dict(self):
         """ Converte o objeto Paragraph para um dicionário """
@@ -26,7 +26,7 @@ class Paragraph:
         return cls(
             document_id=para_dict['document_id'],
             content=para_dict['content'],
-            num_paragraph=para_dict.get['num_paragraph'],
+            num_paragraph=para_dict['num_paragraph'],
             _id=para_dict.get('_id'),
             translated_content=para_dict.get('translated_content'),
             translated=para_dict.get('translated')

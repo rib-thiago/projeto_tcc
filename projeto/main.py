@@ -8,6 +8,8 @@ from projeto.views.document_detail_view import DocumentDetailView
 from projeto.views.document_update_view import DocumentUpdateView
 from projeto.views.document_content_view import DocumentContentView
 from projeto.views.document_delete_view import DocumentDeleteView
+from projeto.views.document_paragraph_list_view import DocumentParagraphListView
+from projeto.views.paragraph_detail_view import ParagraphDetailView
 from projeto.view_manager import ViewManager
 
 def main():
@@ -34,7 +36,9 @@ def main():
     view_manager.register_view('DocumentUpdateView', DocumentUpdateView)
     view_manager.register_view('DocumentContentView', DocumentContentView)
     view_manager.register_view('DocumentDeleteView', DocumentDeleteView)
-
+    view_manager.register_view('DocumentParagraphListView', DocumentParagraphListView)
+    view_manager.register_view('ParagraphDetailView', ParagraphDetailView)
+    
     # Iniciar a aplicação com a view inicial
     view_manager.start(view_manager.get_view('MainMenuView'))
 

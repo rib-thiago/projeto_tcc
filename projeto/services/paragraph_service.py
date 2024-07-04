@@ -11,3 +11,10 @@ class ParagraphService:
     def count_paragraphs_by_doc_id(self, doc_id):
         """ Conta o número de parágrafos por doc_id """
         return self.paragraph_repository.count_paragraphs_by_doc_id(doc_id)
+    
+    def list_paragraphs_by_doc_id(self, doc_id):
+        """ Obtém os paragrafos com um doc_id"""
+        return self.paragraph_repository.list_paragraphs_by_doc_id(doc_id)
+    
+    def get_paragraph_content(self, document_id, num_paragraph):
+        return self.paragraph_repository.get_paragraph_content(document_id, num_paragraph)

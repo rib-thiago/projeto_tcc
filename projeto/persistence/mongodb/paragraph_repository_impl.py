@@ -18,5 +18,26 @@ class ParagraphRepository:
         return self.collection.count_documents({'document_id': ObjectId(doc_id)})
 
     def list_paragraphs_by_doc_id(self, doc_id):
-        """ Lista todos os parágrafos com um determinado doc_id """
-        return list(self.collection.find({'document_id': ObjectId(doc_id)}))
+        """Lista todos os parágrafos com um determinado doc_id"""
+        paragraphs = self.collection.find({'document_id': ObjectId(doc_id)})
+        # Cria uma lista de objetos Paragraph
+        paragraph_list = [Paragraph.from_dict(paragraph) for paragraph in paragraphs]
+        return paragraph_list
+    
+    def get_paragraph_content(self, document_id, num_paragraph):
+        try:
+            paragraph = self.collection.find_one({"document_id": ObjectId(document_id), "num_paragraph": int(num_paragraph)})
+            if paragraph:
+                return paragraph['content']
+            else:
+                print(f"Parágrafo não encontrado para document_id={document_id} e num_paragraph={num_paragraph}")
+                return None
+        except Exception as e:
+            print(f"Erro ao buscar parágrafo: {e}")
+            return None
+
+
+
+
+
+
