@@ -1,7 +1,4 @@
 from itertools import islice
-from rich.console import Console
-from rich.panel import Panel
-from rich.text import Text
 from projeto.views.base_view import BaseView
 from bson import ObjectId
 
@@ -13,7 +10,6 @@ class DocumentParagraphListView(BaseView):
         self.paragraphs_per_page = paragraphs_per_page
 
     def display(self):
-        console = Console()
         doc_id = self.documento._id
         contents = self.get_para_controller().list_paragraphs(doc_id)
         total_paragraphs = len(contents)
@@ -22,32 +18,20 @@ class DocumentParagraphListView(BaseView):
             end_paragraph = self.start_paragraph + self.paragraphs_per_page
             current_paragraphs = list(islice(contents, self.start_paragraph, end_paragraph))
 
-            console.clear()
-
-            # Constrói o texto formatado para exibir os parágrafos
-            list_text = Text()
-            list_text.append("\n")
-            list_text.append(f"Exibindo {self.start_paragraph + 1} a {min(end_paragraph, total_paragraphs)} de {total_paragraphs} parágrafos\n\n")
+            # Exibe os parágrafos formatados
+            print("\nLista de Parágrafos:\n")
+            print(f"Exibindo {self.start_paragraph + 1} a {min(end_paragraph, total_paragraphs)} de {total_paragraphs} parágrafos\n")
             for para in current_paragraphs:
                 para_id = para._id
-                list_text.append(f"Parágrafo - {para_id}\n")
+                print(f"Parágrafo - {para_id}\n")
 
-            # Renderiza o painel com os parágrafos formatados
-            console.print(Panel(list_text, title='Lista de Parágrafos', style="green on black", width=100))
-
-            # Constrói o painel com as opções de navegação
-            options_text = Text()
-            options_text.append("\n")
-            options_text.append("[1] Voltar aos detalhes do documento", style="bold")
-            options_text.append("\n")
-            options_text.append("[2] Ver mais parágrafos", style="bold")
+            # Exibe as opções de navegação
+            print("Escolha uma opção:")
+            print("[1] Voltar aos detalhes do documento")
+            print("[2] Ver mais parágrafos")
             if self.start_paragraph > 0:
-                options_text.append("\n")
-                options_text.append("[3] Voltar para parágrafos anteriores", style="bold")
-            options_text.append("\n")
-            options_text.append("\nVisualizar um ou mais parágrafos (s):", style='bold')
-
-            console.print(Panel(options_text, title="Opções", style="green on black", width=100))
+                print("[3] Voltar para parágrafos anteriores")
+            print("\nVisualizar um ou mais parágrafos (s):")
 
             opcao = input("> ")
 
@@ -72,10 +56,9 @@ class DocumentParagraphListView(BaseView):
 
     def prompt_paragraph_selection(self):
         """ Método para solicitar a seleção de parágrafos do usuário """
-        console = Console()
         selected_paragraphs = []
         while True:
-            console.print(Panel("Digite o número do parágrafo ou um intervalo separado por vírgula (Ex: 1, 3-5): ", style="green on black", width=100))
+            print("Digite o número do parágrafo ou um intervalo separado por vírgula (Ex: 1, 3-5): ")
             paragraph_input = input(" ")
             parts = paragraph_input.split(',')
             for part in parts:
@@ -86,11 +69,10 @@ class DocumentParagraphListView(BaseView):
                     selected_paragraphs.append(str(int(part)))
             
             confirmation_text = f"\nVocê selecionou os parágrafos: {selected_paragraphs}. Deseja continuar? (s/n): "
-            console.print(Panel(confirmation_text, style="green on black", width=100))
+            print(confirmation_text)
             confirm_input = input(" ")
 
             if confirm_input.lower() == 's':
                 return selected_paragraphs
             else:
                 selected_paragraphs = []
-

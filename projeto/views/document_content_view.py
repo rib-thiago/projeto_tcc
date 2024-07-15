@@ -1,7 +1,4 @@
 from itertools import islice
-from rich.console import Console
-from rich.panel import Panel
-from rich.text import Text
 from projeto.utils.text_utils import extract_paragraphs
 from projeto.views.base_view import BaseView
 
@@ -13,8 +10,6 @@ class DocumentContentView(BaseView):
         self.paragraphs_per_page = paragraphs_per_page
 
     def display(self):
-        console = Console()
-
         paragraphs = extract_paragraphs(self.document.text)
         total_paragraphs = len(paragraphs)
 
@@ -22,28 +17,18 @@ class DocumentContentView(BaseView):
             end_paragraph = self.start_paragraph + self.paragraphs_per_page
             current_paragraphs = list(islice(paragraphs, self.start_paragraph, end_paragraph))
 
-            console.clear()
-
-            # Constrói o texto formatado para exibir os parágrafos
-            text = Text()
+            # Exibe os parágrafos formatados
+            print("\nVisualizando Parágrafos:\n")
             for idx, paragraph in enumerate(current_paragraphs, start=self.start_paragraph + 1):
-                text.append(f"Parágrafo {idx}:\n", style="bold green")
-                text.append(paragraph + "\n\n")
+                print(f"Parágrafo {idx}:\n")
+                print(paragraph + "\n")
 
-            # Renderiza o painel com os parágrafos formatados
-            console.print(Panel.fit(text, title="Visualizando Parágrafos", style="green on black", width=100))
-
-            # Constrói o painel com as opções de navegação
-            options_text = Text()
-            options_text.append("\n")
-            options_text.append("[1] Ver mais parágrafos", style="bold")
-            options_text.append("\n")
-            options_text.append("[2] Voltar aos detalhes do documento", style="bold")
+            # Exibe as opções de navegação
+            print("Escolha uma opção:")
+            print("[1] Ver mais parágrafos")
+            print("[2] Voltar aos detalhes do documento")
             if self.start_paragraph > 0:
-                options_text.append("\n")
-                options_text.append("[3] Voltar para parágrafos anteriores", style="bold")
-
-            console.print(Panel(options_text, title="Opções", style="green on black", width=100))
+                print("[3] Voltar para parágrafos anteriores")
 
             opcao = input("> ")
 
