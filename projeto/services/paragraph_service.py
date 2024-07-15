@@ -18,3 +18,9 @@ class ParagraphService:
     
     def get_paragraph_content(self, document_id, num_paragraph):
         return self.paragraph_repository.get_paragraph_content(document_id, num_paragraph)
+
+    def update_paragraph_translation(self, document_id, num_paragraph, translation):
+        return self.paragraph_repository.update_paragraph_translation(document_id, num_paragraph, translation)
+
+    def get_paragraph_translated(self, document_id, num_paragraph):
+        return self.paragraph_repository.get_paragraph_translated(document_id, num_paragraph)

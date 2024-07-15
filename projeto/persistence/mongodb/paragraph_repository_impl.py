@@ -36,8 +36,27 @@ class ParagraphRepository:
             print(f"Erro ao buscar parágrafo: {e}")
             return None
 
+    def update_paragraph_translation(self, document_id, num_paragraph, translation):
+        try:
+            result = self.collection.update_one(
+                {"document_id": ObjectId(document_id), "num_paragraph": int(num_paragraph)},
+                {"$set": {"translated_content": translation, "translated": True}}
+            )
+            if result.modified_count == 0:
+                print(f"Nenhum documento foi atualizado para document_id={document_id} e num_paragraph={num_paragraph}")
+            else:
+                print(f"Documento atualizado com sucesso para document_id={document_id} e num_paragraph={num_paragraph}")
+        except Exception as e:
+            print(f"Erro ao atualizar parágrafo: {e}")
 
 
-
-
-
+    def get_paragraph_translated(self, document_id, num_paragraph):
+        try:
+            paragraph = self.collection.find_one({"document_id": ObjectId(document_id), "num_paragraph": int(num_paragraph)})
+            if paragraph['translated'] == True:
+                return paragraph['translated'], paragraph['translated_content']
+            else:
+                return paragraph['translated'], ""
+        except Exception as e:
+            print(f"Erro ao buscar parágrafo: {e}")
+            return None

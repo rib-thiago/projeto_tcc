@@ -22,15 +22,20 @@ class ParagraphDetailView(BaseView):
             for num_paragraph in current_paragraphs:
                 # Obtém o conteúdo do parágrafo usando o controlador de parágrafo
                 paragraph_text = self.get_para_controller().get_paragraph_content(doc_id, num_paragraph)
+                translated, translated_content = self.get_para_controller().get_paragraph_translated(doc_id, num_paragraph)
                 print(f"Parágrafo {num_paragraph}:\n")
                 print(paragraph_text + "\n")
+
+                if translated == True:
+                    print(f"Tradução: \n {translated_content} \n")
 
             # Exibe as opções de navegação
             print("Escolha uma opção:")
             print("[1] Ver mais parágrafos")
             print("[2] Voltar aos detalhes do documento")
+            print("[3] Traduzir parágrafo")
             if start_paragraph > 0:
-                print("[3] Voltar para parágrafos anteriores")
+                print("[4] Voltar para parágrafos anteriores")
 
             opcao = input("> ")
 
@@ -39,7 +44,13 @@ class ParagraphDetailView(BaseView):
             elif opcao == '2':
                 input("\nPressione Enter para voltar aos detalhes do documento.")
                 return self.view_manager.get_view('DocumentDetailView', self.documento)
-            elif opcao == '3' and start_paragraph > 0:
+            elif opcao == '3':
+                paragraph_to_translate = input(f"Digite o número do parágrafo que deseja traduzir: {current_paragraphs}")
+                if paragraph_to_translate in current_paragraphs:
+                    return self.view_manager.get_view('TranslateParagraphView', self.documento, paragraph_to_translate)
+                else:
+                    print("Número de parágrafo inválido.")
+            elif opcao == '4' and start_paragraph > 0:
                 start_paragraph -= paragraphs_per_page
                 if start_paragraph < 0:
                     start_paragraph = 0

@@ -22,8 +22,9 @@ class DocumentParagraphListView(BaseView):
             print("\nLista de Parágrafos:\n")
             print(f"Exibindo {self.start_paragraph + 1} a {min(end_paragraph, total_paragraphs)} de {total_paragraphs} parágrafos\n")
             for para in current_paragraphs:
-                para_id = para._id
-                print(f"Parágrafo - {para_id}\n")
+                para_num = para.num_paragraph
+                para_translated = para.translated
+                print(f"Parágrafo nº {para_num} - Traduzido: {para_translated}")
 
             # Exibe as opções de navegação
             print("Escolha uma opção:")
