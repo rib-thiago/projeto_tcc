@@ -16,6 +16,11 @@ class DocumentListView(BaseView):
 
         if escolha.isdigit() and 1 <= int(escolha) <= len(documents):
             escolha_idx = int(escolha) - 1
-            return self.view_manager.get_view('DocumentDetailView', documents[escolha_idx])
+            document_id = documents[escolha_idx]._id
+            return self.view_manager.get_view('DocumentDetailView', document_id)
         else:
             return self.view_manager.get_view('MainMenuView')
+
+
+
+
