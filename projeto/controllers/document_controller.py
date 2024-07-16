@@ -4,8 +4,8 @@ from projeto.utils.text_utils import extract_text, extract_paragraphs
 from .paragraph_controller import ParagraphController
 
 class DocumentController:
-    def __init__(self, mongo_config):
-        self.document_service = DocumentService(mongo_config)
+    def __init__(self, mongo_config, paragraph_repository):
+        self.document_service = DocumentService(mongo_config, paragraph_repository)
         self.para_controller = ParagraphController(mongo_config)
 
     def insert_document(self, title, author, language, filepath, source):
@@ -18,7 +18,7 @@ class DocumentController:
         if not success:
             return False, message
         # Conta os parágrafos do documento
-        num_paragraphs = self.para_controller.count_paragraphs_by_doc_id(doc_id)
+        num_paragraphs, translated_paragraphs = self.para_controller.count_paragraphs_by_doc_id(doc_id)
         document.num_paragraphs = num_paragraphs
         success, message = self.document_service.insert_document(document)
         return success, message

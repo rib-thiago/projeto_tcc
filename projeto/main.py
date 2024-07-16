@@ -1,6 +1,10 @@
 from projeto.persistence.mongodb.mongodb_config import MongoDBConfig
+from projeto.persistence.mongodb.document_repository_impl import DocumentRepository
+from projeto.persistence.mongodb.paragraph_repository_impl import ParagraphRepository
+
 from projeto.controllers.document_controller import DocumentController
 from projeto.controllers.paragraph_controller import ParagraphController
+
 from projeto.views.main_menu_view import MainMenuView
 from projeto.views.document_insert_view import DocumentInsertView
 from projeto.views.document_list_view import DocumentListView
@@ -22,8 +26,12 @@ def main():
     documents_collection = mongodb_config.get_collection('documents')
     paragraphs_collection = mongodb_config.get_collection('paragraphs')
 
+    # Inicializa os repositórios
+    paragraph_repository = ParagraphRepository(mongodb_config)
+    document_repository = DocumentRepository(mongodb_config, paragraph_repository)
+
     # Inicialização dos Controllers
-    doc_controller = DocumentController(mongodb_config)
+    doc_controller = DocumentController(mongodb_config, paragraph_repository)
     para_controller = ParagraphController(mongodb_config)
 
     # Inicialização do ViewManager
