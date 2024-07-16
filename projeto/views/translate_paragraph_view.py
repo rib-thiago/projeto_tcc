@@ -14,12 +14,12 @@ class TranslateParagraphView(BaseView):
         paragraph_text = self.get_para_controller().get_paragraph_content(doc_id, paragraph_number)
         
         print(f"Parágrafo {paragraph_number}:\n")
-        print(paragraph_text + "\n")
+        print(f'{paragraph_text}\n')
 
         source_lang = input("Digite o idioma de origem (por exemplo, 'en' para inglês): ")
         target_lang = input("Digite o idioma de destino (por exemplo, 'pt' para português): ")
 
-        translated = self.get_para_controller().translate_paragraph(doc_id, paragraph_number, paragraph_text, source_lang, target_lang)
+        translated = self.get_para_controller().translate_paragraph(paragraph_text, source_lang, target_lang)
         print(f'\nTradução: \n{translated}')
 
         save_translation = input(f"\nDeseja salvar essa tradução? (s/n): ").strip().lower()
@@ -28,3 +28,4 @@ class TranslateParagraphView(BaseView):
 
         input("\nPressione Enter para voltar à visualização de parágrafos.")
         return self.view_manager.get_view('ParagraphDetailView', self.documento, [paragraph_number])
+        
