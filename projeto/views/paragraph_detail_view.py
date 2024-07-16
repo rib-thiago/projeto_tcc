@@ -1,4 +1,5 @@
 from projeto.views.base_view import BaseView
+from textwrap import fill
 
 class ParagraphDetailView(BaseView):
     def __init__(self, view_manager, documento, selected_paragraphs):
@@ -18,7 +19,7 @@ class ParagraphDetailView(BaseView):
                 self.current_index += 1
             elif option == '2':
                 input("\nPressione Enter para voltar aos detalhes do documento.")
-                return self.view_manager.get_view('DocumentDetailView', self.documento)
+                return self.view_manager.get_view('DocumentDetailView', self.documento._id)
             elif option == '3':
                 paragraph_to_translate = self.selected_paragraphs[self.current_index]
                 return self.view_manager.get_view('TranslateParagraphView', self.documento, paragraph_to_translate)
@@ -29,17 +30,19 @@ class ParagraphDetailView(BaseView):
 
         print("Você já visualizou todos os parágrafos.")
         input("\nPressione Enter para voltar aos detalhes do documento.")
-        return self.view_manager.get_view('DocumentDetailView', self.documento)
+        return self.view_manager.get_view('DocumentDetailView', self.documento._id)
 
     def display_paragraph(self, num_paragraph):
         paragraph_text = self.get_para_controller().get_paragraph_content(self.doc_id, num_paragraph)
         translated, translated_content = self.get_para_controller().get_paragraph_translated(self.doc_id, num_paragraph)
 
         print(f"\nVisualizando Parágrafo {num_paragraph}:\n")
-        print(paragraph_text + "\n")
+        wrapped_paragraph = fill(paragraph_text, width=80)  # Aplica soft wrapping ao texto
+        print(wrapped_paragraph + "\n")
 
         if translated:
-            print(f"Tradução:\n{translated_content}\n")
+            wrapped_translated = fill(translated_content, width=80 )
+            print(f"Tradução:\n{wrapped_translated}\n")
 
     def get_user_option(self):
         print("Escolha uma opção:")
