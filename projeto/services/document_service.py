@@ -1,8 +1,9 @@
 from projeto.persistence.mongodb.document_repository_impl import DocumentRepository
-
+from projeto.persistence.mongodb.paragraph_repository_impl import ParagraphRepository
 class DocumentService:
-    def __init__(self, mongo_config):
-        self.document_repository = DocumentRepository(mongo_config)
+    def __init__(self, mongo_config, paragraph_repository):
+        self.document_repository = DocumentRepository(mongo_config, paragraph_repository)
+        self.paragraph_repository = ParagraphRepository(mongo_config)
 
     def insert_document(self, document):
         try:

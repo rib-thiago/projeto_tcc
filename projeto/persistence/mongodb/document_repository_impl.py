@@ -3,9 +3,10 @@ from projeto.models.document import Document
 from bson import ObjectId
 
 class DocumentRepository:
-    def __init__(self, mongo_config):
+    def __init__(self, mongo_config, paragraph_repository):
         self.mongo_config = mongo_config
         self.collection = self.mongo_config.get_collection('documents')
+        self.paragraph_repository = paragraph_repository
 
     def insert_document(self, document):
         """ Insere um novo documento no MongoDB """
@@ -40,6 +41,9 @@ class DocumentRepository:
     def delete_document(self, document_id):
         """ Deleta um documento do MongoDB """
         result = self.collection.delete_one({'_id': ObjectId(document_id)})
+        if result.deleted_count > 0:
+            # Deletar todos os parágrafos associados ao documento
+            self.paragraph_repository.delete_paragraphs_by_doc_id(document_id)
         return result.deleted_count
 
     def get_document_by_id(self, document_id):

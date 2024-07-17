@@ -1,4 +1,5 @@
 from projeto.views.base_view import BaseView
+from projeto.utils.file_handlers import verify_file_path
 
 class DocumentInsertView(BaseView):
     def display(self):
@@ -9,6 +10,7 @@ class DocumentInsertView(BaseView):
         author = input("Autor do Documento: ")
         language = input("Idioma do Documento: ")
         filepath = input("Path do Arquivo de Documento: ")
+        # filepath = verify_file_path(path)
         source = input("URL da fonte do Documento, se aplicável: ")
 
         success, message = self.get_doc_controller().insert_document(title, author, language, filepath, source)

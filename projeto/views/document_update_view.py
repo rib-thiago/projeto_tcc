@@ -6,39 +6,73 @@ class DocumentUpdateView(BaseView):
         self.document = document
 
     def display(self):
-
         while True:
+            self.print_document_info()
+
+            fields_and_values = self.field_selector()
+
+            for field, new_value in fields_and_values:
+                success, message = self.get_doc_controller().update_document(self.document._id, field, new_value)
+
+                if success:
+                    print(f"\nCampo '{field}' atualizado com sucesso para '{new_value}'.")
+                else:
+                    print(f"\nErro ao atualizar campo '{field}': {message}")
+                    input("\nPressione Enter para tentar novamente...")
+                    return self.view_manager.get_view('DocumentDetailView', self.document)
+
+            print("\nDocumento atualizado com sucesso.")
+            print("\nPressione Enter para voltar aos detalhes do documento...")
+            input("")
+            return self.view_manager.get_view('DocumentDetailView', self.document._id)
+
+    def print_document_info(self):
             # Exibe as informações atuais do documento
             print("\nAtualizar Documento:\n")
             print(f"Título: {self.document.title}")
             print(f"Autor: {self.document.author}")
             print(f"Idioma: {self.document.language}")
-            print(f"Filepath: {self.document.filepath}")
-            print(f"Source: {self.document.source}")
+            # print(f"Filepath: {self.document.filepath}")
+            print(f"Fonte: {self.document.source}")
             print(f"Número de Parágrafos: {self.document.num_paragraphs}")
             print(f"Data de Criação: {self.document.created_at.strftime('%d/%m/%Y')}")
 
-            # Prompt para atualizar um campo específico
-            print("\nInforme o campo a ser atualizado (ex. title, author, language): ")
-            field = input("> ")
+    def field_selector(self):
+        """ Filtra os parágrafos com base nas preferências do usuário """
+        field_mapping = {
+            '1': 'title',
+            '2': 'author',
+            '3': 'language',
+            '4': 'source'
+        }
 
-            if field in ["paragraphs", "num_paragraphs"]:
-                print("\nErro: Não é permitido editar o campo 'paragraphs' ou 'num_paragraphs'.")
-                input("")
-                return self.view_manager.get_view('DocumentDetailView', self.document)
+        print("Escolha os campos a serem editados:")
+        print("[1] Titulo")
+        print("[2] Autor")
+        print("[3] Idioma")
+        print("[4] Fonte\n")
 
-            print(f"\nInforme o novo valor para o campo {field}: ")
-            new_value = input("> ")
+        print("Digite o número dos campos separados por vírgula: \n")
+        option_input = input("> ")
+        options = option_input.split(',')
 
-            success, message = self.get_doc_controller().update_document(self.document._id, field, new_value)
+        field_value_pairs = []
 
-            if success:
-                print("\nDocumento atualizado com sucesso.")
+        for option in options:
+            field = field_mapping.get(option.strip())
+            if field:
+                print(f"\nInforme o novo valor para o campo {field}: ")
+                new_value = input("> ")
+                field_value_pairs.append((field, new_value))
             else:
-                print(f"\nErro: {message}")
-                input("")
-                return self.view_manager.get_view('DocumentDetailView', self.document)
-            
-            print("\nPressione Enter para voltar aos detalhes do documentos...")
-            input("")
-            return self.view_manager.get_view('DocumentDetailView', self.document)
+                print(f"Opção inválida: {option.strip()}.")
+
+        return field_value_pairs
+
+
+
+
+
+
+
+

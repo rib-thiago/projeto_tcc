@@ -9,3 +9,4 @@ def extract_text(filepath):
 def extract_paragraphs(text):
         paragraphs = text.split('\n\n')
         return [para.strip() for para in paragraphs if para.strip()]
+

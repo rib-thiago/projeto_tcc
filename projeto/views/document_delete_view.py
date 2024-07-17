@@ -7,16 +7,7 @@ class DocumentDeleteView(BaseView):
 
     def display(self):
         while True:
-            # Exibe as informações atuais do documento
-            print("\nDeletar Documento:\n")
-            print(f"Título: {self.document.title}")
-            print(f"Autor: {self.document.author}")
-            print(f"Idioma: {self.document.language}")
-            print(f"Filepath: {self.document.filepath}")
-            print(f"Source: {self.document.source}")
-            print(f"Número de Parágrafos: {self.document.num_paragraphs}")
-            print(f"Data de Criação: {self.document.created_at.strftime('%d/%m/%Y')}")
-
+            self.print_document_info()
             # Renderiza opção para confirmar a deleção
             confirmacao = input("\nTem certeza que deseja deletar este documento? (s/n): ")
 
@@ -35,3 +26,14 @@ class DocumentDeleteView(BaseView):
             else:
                 print('Opção inválida!')
 
+
+    def print_document_info(self):
+            # Exibe as informações atuais do documento
+            print("\nDetalhes do Documento:\n")
+            print(f"Título: {self.document.title}")
+            print(f"Autor: {self.document.author}")
+            print(f"Idioma: {self.document.language}")
+            # print(f"Filepath: {self.document.filepath}")
+            print(f"Fonte: {self.document.source}")
+            print(f"Número de Parágrafos: {self.document.num_paragraphs}")
+            print(f"Data de Criação: {self.document.created_at.strftime('%d/%m/%Y')}")
