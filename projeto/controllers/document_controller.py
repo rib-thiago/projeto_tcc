@@ -3,6 +3,7 @@ from projeto.services.ocr_service import ocr_extract_text
 from projeto.models.document import Document
 from projeto.utils.file_handlers import read_file, verify_file_path, split_pdf, pdf_to_images
 from projeto.utils.text_utils import extract_paragraphs
+from projeto.utils.exceptions import FileNotFoundError, IOError, PdfReadError, handle_exception
 from .paragraph_controller import ParagraphController
 
 import os
@@ -15,30 +16,80 @@ class DocumentController:
 
     def insert_document(self, title, author, language, filepath, source):
         """ Insere um novo documento """
-        file_type = verify_file_path(filepath)
-        if file_type is None:
-            print('Erro: Formato de arquivo não suportado.')
-            return False, 'Formato de arquivo não suportado.'
+        try:
+            file_type = verify_file_path(filepath)
+            if file_type is None:
+                # input('Erro: Formato de arquivo não suportado.')
+                input('PUTA QUE ME PARIU')
+                # return False, 'Formato de arquivo não suportado.'
+                return quit
+            if file_type == 'txt':
+                success, message, text, paragraphs = self._process_txt(filepath)
+            elif file_type == 'pdf':
+                success, message, text, paragraphs = self._process_pdf(filepath)
 
-        if file_type == 'txt':
-            success, message, text, paragraphs = self._process_txt(filepath)
-        elif file_type == 'pdf':
-            success, message, text, paragraphs = self._process_pdf(filepath)
+            if not success:
+                return False, message
 
-        if not success:
-            return False, message
+            document = Document(title, author, language, filepath, source, text)
+            doc_id = document._id
+            success, message = self.para_controller.insert_paragraphs(paragraphs, doc_id)
+            if not success:
+                return False, message
 
-        document = Document(title, author, language, filepath, source, text)
-        doc_id = document._id
-        success, message = self.para_controller.insert_paragraphs(paragraphs, doc_id)
-        if not success:
-            return False, message
+            # Conta os parágrafos do documento
+            num_paragraphs, translated_paragraphs = self.para_controller.count_paragraphs_by_doc_id(doc_id)
+            document.num_paragraphs = num_paragraphs
+            success, message = self.document_service.insert_document(document)
+            if not success:
+                return False, message
 
-        # Conta os parágrafos do documento
-        num_paragraphs, translated_paragraphs = self.para_controller.count_paragraphs_by_doc_id(doc_id)
-        document.num_paragraphs = num_paragraphs
-        success, message = self.document_service.insert_document(document)
-        return success, message
+            # Executa o OCR, se necessário
+            if file_type == 'pdf':
+                success, message = self._process_ocr(filepath)
+                if not success:
+                    return False, message
+
+            return True, 'Documento inserido com sucesso.'
+
+        except (FileNotFoundError, ValueError) as e:
+            handle_exception(e)
+            return False, str(e)
+
+        except Exception as e:
+            handle_exception(e)
+            return False, f"Erro inesperado: {str(e)}"
+
+    def _process_ocr(self, filepath):
+        """ Processa OCR para um documento PDF """
+        try:
+            # Diretório temporário para armazenar as páginas divididas e convertidas
+            with tempfile.TemporaryDirectory() as temp_dir:
+                # Dividir o PDF em páginas individuais
+                split_pdf(filepath, temp_dir)
+
+                # Converter cada página do PDF em imagens PNG
+                image_paths = pdf_to_images(temp_dir, temp_dir)
+
+                # Inicializa uma variável para armazenar o texto extraído das imagens
+                extracted_text = ''
+
+                # Processa cada imagem para extrair texto usando OCR
+                for image_path in image_paths:
+                    extracted_text += ocr_extract_text(image_path) + '\n\n'
+
+                # Divide o texto extraído em parágrafos
+                paragraphs = extract_paragraphs(extracted_text)
+
+                return True, "OCR processado com sucesso"
+
+        except (PdfReadError, IOError) as e:
+            handle_exception(e)
+            return False, f"Erro ao processar PDF para OCR: {str(e)}"
+
+        except Exception as e:
+            handle_exception(e)
+            return False, f"Erro inesperado ao processar OCR: {str(e)}"
 
     def _process_txt(self, filepath):
         """ Processa arquivos TXT """

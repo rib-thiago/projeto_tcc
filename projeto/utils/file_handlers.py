@@ -1,32 +1,40 @@
 import os
 import PyPDF2
 from pdf2image import convert_from_path
-
+from projeto.utils.exceptions import FileNotFoundError, IOError, PdfReadError, handle_exception
 
 def read_file(file_path):
-    with open(file_path, 'r') as file:
-        return file.read()
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return file.read()
+    except FileNotFoundError as e:
+        handle_exception(FileNotFoundError(f"File not found: {file_path}"))
+        return None
+    except IOError as e:
+        handle_exception(IOError(f"Error reading file: {file_path}"))
+        return None
 
 def write_file(file_path, content):
-    with open(file_path, 'w') as file:
-        file.write(content)
+    try:
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.write(content)
+    except IOError as e:
+        handle_exception(IOError(f"Error writing to file: {file_path}"))
 
 def verify_file_path(file_path):
-    # Converte o caminho para um caminho absoluto
-    absolute_path = os.path.abspath(file_path)
-
-    if os.path.isfile(absolute_path):
-        file_extension = os.path.splitext(absolute_path)[1].lower()
-
-        if file_extension == '.txt':
+    try:
+        abs_path = os.path.abspath(file_path)
+        if not os.path.isfile(abs_path):
+            raise FileNotFoundError(f"File does not exist: {file_path}")
+        if abs_path.endswith('.txt'):
             return 'txt'
-        elif file_extension == '.pdf':
+        elif abs_path.endswith('.pdf'):
             return 'pdf'
         else:
-            return None  # Retorna None se não for .txt nem .pdf
-    else:
-        print(f'O caminho {file_path} não aponta para um arquivo .txt nem .pdf ou o caminho especificado não é válido.')
-        return None  # Retorna None se o arquivo não existir
+            raise ValueError("Unsupported file type")
+    except (FileNotFoundError, ValueError) as e:
+        handle_exception(e)
+        return None
 
 def split_pdf(input_pdf_path, output_path_prefix):
     try:
@@ -56,10 +64,8 @@ def split_pdf(input_pdf_path, output_path_prefix):
                     pdf_writer.write(output_file)
                     # print(f"Página {page_number + 1} extraída e salva em: {output_pdf_path}")
 
-    except FileNotFoundError:
-        print(f"Arquivo '{input_pdf_path}' não encontrado.")
-    except Exception as e:
-        print(f"Erro ao processar o PDF: {e}")
+    except (FileNotFoundError, PdfReadError, IOError) as e:
+        handle_exception(e)
 
 def pdf_to_images(pdf_dir, output_folder):
     try:
@@ -86,9 +92,6 @@ def pdf_to_images(pdf_dir, output_folder):
 
         return image_paths
 
-    except FileNotFoundError:
-        print(f"Arquivo '{pdf_dir}' não encontrado.")
-        return []
-    except Exception as e:
-        print(f"Erro ao processar o PDF: {e}")
+    except (IOError, PdfReadError) as e:
+        handle_exception(e)
         return []
