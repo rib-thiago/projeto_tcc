@@ -36,7 +36,7 @@ class DocumentParagraphListView(BaseView):
             opcao = input("> ")
 
             if opcao == '1':
-                return self.view_manager.get_view('DocumentDetailView', self.documento)
+                return self.view_manager.get_view('DocumentDetailView', self.documento._id)
             elif opcao == '2':
                 self.start_paragraph = end_paragraph
             elif opcao == '3':
