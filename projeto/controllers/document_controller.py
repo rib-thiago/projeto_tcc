@@ -1,7 +1,8 @@
 from projeto.services.document_service import DocumentService
+from projeto.services.ocr_service import ocr_extract_text
 from projeto.models.document import Document
 from projeto.utils.file_handlers import read_file, verify_file_path, split_pdf, pdf_to_images
-from projeto.utils.text_utils import extract_paragraphs, ocr_extract_text
+from projeto.utils.text_utils import extract_paragraphs
 from .paragraph_controller import ParagraphController
 
 import os
@@ -56,7 +57,7 @@ class DocumentController:
                 split_pdf(filepath, temp_dir)
     
                 # Converter cada página do PDF em imagens PNG
-                image_paths = pdf_to_images(temp_dir, 'samples')
+                image_paths = pdf_to_images(temp_dir, temp_dir)
     
                 # Inicializa uma variável para armazenar o texto extraído das imagens
                 extracted_text = ''

@@ -54,7 +54,7 @@ def split_pdf(input_pdf_path, output_path_prefix):
                 output_pdf_path = os.path.join(output_path_prefix, f"page_{page_number + 1}.pdf")
                 with open(output_pdf_path, 'wb') as output_file:
                     pdf_writer.write(output_file)
-                    print(f"Página {page_number + 1} extraída e salva em: {output_pdf_path}")
+                    # print(f"Página {page_number + 1} extraída e salva em: {output_pdf_path}")
 
     except FileNotFoundError:
         print(f"Arquivo '{input_pdf_path}' não encontrado.")
@@ -82,7 +82,7 @@ def pdf_to_images(pdf_dir, output_folder):
                     image_path = os.path.join(output_folder, f"{os.path.splitext(pdf_file)[0]}_page_{i+1}.png")
                     image.save(image_path, "PNG")
                     image_paths.append(image_path)
-                    print(f"Imagem salva em: {image_path}")
+                    # print(f"Imagem salva em: {image_path}")
 
         return image_paths
 

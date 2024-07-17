@@ -35,7 +35,7 @@ class DocumentContentView(BaseView):
 
         print("Você já visualizou todos os parágrafos.")
         input("\nPressione Enter para voltar aos detalhes do documento.")
-        return self.view_manager.get_view('DocumentDetailView', self.document)
+        return self.view_manager.get_view('DocumentDetailView', self.document._id)
 
     def print_paragraphs(self, paragraphs):
         """ Exibe os parágrafos formatados """

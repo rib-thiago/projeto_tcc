@@ -1,4 +1,4 @@
-from projeto.persistence.mongodb.paragraph_repository_impl import ParagraphRepository
+# from projeto.persistence.mongodb.paragraph_repository_impl import ParagraphRepository
 
 from deep_translator import GoogleTranslator
 
