@@ -5,7 +5,7 @@ from projeto.utils.file_handlers import read_file, split_pdf, pdf_to_images
 from projeto.utils.text_utils import extract_paragraphs
 from .paragraph_controller import ParagraphController
 
-from projeto.utils.validators import DocumentValidator
+from projeto.utils.validators import DocumentValidator, ParagraphValidator
 
 import os
 import tempfile

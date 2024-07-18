@@ -1,5 +1,4 @@
 # utils/validators.py
-
 import os
 
 class DocumentValidator:
@@ -44,53 +43,44 @@ class DocumentValidator:
 
 class ParagraphValidator:
     @staticmethod
-    def validate(paragraph):
+    def validate_paragraphs(paragraphs):
+        errors = []
+        for paragraph in paragraphs:
+            paragraph_errors = ParagraphValidator.validate(paragraph, paragraphs)
+            if paragraph_errors:
+                errors.append(paragraph_errors)
+        return errors
+
+    @staticmethod
+    def validate(paragraph, all_paragraphs=None):
         errors = []
         if not paragraph.content:
             errors.append("Content is required.")
         if not paragraph.num_paragraph:
             errors.append("Paragraph number is required.")
-        # Adicione mais validações conforme necessário
+        if not paragraph.document_id:
+            errors.append("Document ID is required.")
+        if paragraph.document_id:
+            errors += ParagraphValidator.validate_document_id(paragraph.document_id, all_paragraphs)
+        errors += ParagraphValidator.validate_unique_paragraph_number(paragraph.num_paragraph, paragraph.document_id, all_paragraphs)
+        return errors
 
+    @staticmethod
+    def validate_document_id(document_id, all_paragraphs):
+        errors = []
+        if all_paragraphs is not None:
+            document_ids = {p.document_id for p in all_paragraphs}
+            if document_id not in document_ids:
+                errors.append("Não existe um documento com este _id.")
+        return errors
+
+    @staticmethod
+    def validate_unique_paragraph_number(paragraph_number, document_id, all_paragraphs):
+        errors = []
+        if all_paragraphs is not None:
+            for p in all_paragraphs:
+                if p.document_id == document_id and p.num_paragraph == paragraph_number:
+                    errors.append("Número de parágrafo duplicado para este documento.")
         return errors
 
 
-
-
-"""
-Validação Individual no Controlador: Se você deseja validar apenas o tipo de 
-arquivo em um determinado ponto do seu código (por exemplo, antes de chamar o 
-serviço de inserção de documento), você pode fazer isso chamando diretamente o 
-método validate_file_type do DocumentValidator.
-
-Exemplo:
-
-from utils.validators import DocumentValidator
-
-file_path = 'caminho/do/arquivo.pdf'
-errors = DocumentValidator.validate_file_type(file_path)
-if errors:
-    print("Erros de validação de tipo de arquivo:", errors)
-    # Trate os erros conforme necessário
-
-"""
-
-"""
-Validação Completa com Instância de Documento: Se você já tem uma instância de 
-Document e deseja validar todos os campos, incluindo título, autor, idioma, 
-caminho do arquivo e tipo de arquivo, você pode usar o método validate do 
-DocumentValidator.
-
-Exemplo:
-
-from utils.validators import DocumentValidator
-from projeto.models.document import Document
-
-document = Document(title='Meu Documento', author='Autor', language='pt-br', filepath='caminho/do/arquivo.pdf', source='Fonte')
-
-errors = DocumentValidator.validate(document)
-if errors:
-    print("Erros de validação:", errors)
-    # Trate os erros conforme necessário
-
-"""
