@@ -11,23 +11,6 @@ def write_file(file_path, content):
     with open(file_path, 'w') as file:
         file.write(content)
 
-def verify_file_path(file_path):
-    # Converte o caminho para um caminho absoluto
-    absolute_path = os.path.abspath(file_path)
-
-    if os.path.isfile(absolute_path):
-        file_extension = os.path.splitext(absolute_path)[1].lower()
-
-        if file_extension == '.txt':
-            return 'txt'
-        elif file_extension == '.pdf':
-            return 'pdf'
-        else:
-            return None  # Retorna None se não for .txt nem .pdf
-    else:
-        print(f'O caminho {file_path} não aponta para um arquivo .txt nem .pdf ou o caminho especificado não é válido.')
-        return None  # Retorna None se o arquivo não existir
-
 def split_pdf(input_pdf_path, output_path_prefix):
     try:
         # Verifica se o arquivo PDF de entrada existe

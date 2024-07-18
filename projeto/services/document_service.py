@@ -1,5 +1,9 @@
 from projeto.persistence.mongodb.document_repository_impl import DocumentRepository
 from projeto.persistence.mongodb.paragraph_repository_impl import ParagraphRepository
+
+from projeto.utils.validators import DocumentValidator
+
+
 class DocumentService:
     def __init__(self, mongo_config, paragraph_repository):
         self.document_repository = DocumentRepository(mongo_config, paragraph_repository)
@@ -8,9 +12,10 @@ class DocumentService:
     def insert_document(self, document):
         try:
             documentos_existentes = self.document_repository.list_documents()
-            for doc in documentos_existentes:
-                if doc.title == document.title:
-                    raise ValueError("Já existe um documento com este título.")
+            errors = DocumentValidator.validate(document, documentos_existentes)
+            if errors:
+                return False, "Validation errors: " + ", ".join(errors)
+            
             self.document_repository.insert_document(document)
             return True, "Documento inserido com sucesso!"
         except ValueError as ve:

@@ -1,9 +1,11 @@
 from projeto.services.document_service import DocumentService
 from projeto.services.ocr_service import ocr_extract_text
 from projeto.models.document import Document
-from projeto.utils.file_handlers import read_file, verify_file_path, split_pdf, pdf_to_images
+from projeto.utils.file_handlers import read_file, split_pdf, pdf_to_images
 from projeto.utils.text_utils import extract_paragraphs
 from .paragraph_controller import ParagraphController
+
+from projeto.utils.validators import DocumentValidator
 
 import os
 import tempfile
@@ -15,28 +17,34 @@ class DocumentController:
 
     def insert_document(self, title, author, language, filepath, source):
         """ Insere um novo documento """
-        file_type = verify_file_path(filepath)
-        if file_type is None:
-            print('Erro: Formato de arquivo não suportado.')
-            return False, 'Formato de arquivo não suportado.'
-
-        if file_type == 'txt':
+        document = Document(title, author, language, filepath, source, text=None)
+        existing_documents = self.document_service.list_documents()  # Obtém os documentos existentes
+        validation_errors = DocumentValidator.validate(document, existing_documents)
+        if validation_errors:
+            return False, "Validation errors: " + ", ".join(validation_errors)
+        
+        # Processa o arquivo conforme o tipo
+        if document.filepath.endswith('.txt'):
             success, message, text, paragraphs = self._process_txt(filepath)
-        elif file_type == 'pdf':
+        elif document.filepath.endswith('.pdf'):
             success, message, text, paragraphs = self._process_pdf(filepath)
+        else:
+            return False, "Formato de arquivo não suportado. Apenas .txt e .pdf são permitidos."
 
         if not success:
             return False, message
 
-        document = Document(title, author, language, filepath, source, text)
+        document.text = text
         doc_id = document._id
+
         success, message = self.para_controller.insert_paragraphs(paragraphs, doc_id)
         if not success:
             return False, message
-
+        
         # Conta os parágrafos do documento
         num_paragraphs, translated_paragraphs = self.para_controller.count_paragraphs_by_doc_id(doc_id)
         document.num_paragraphs = num_paragraphs
+
         success, message = self.document_service.insert_document(document)
         return success, message
 
