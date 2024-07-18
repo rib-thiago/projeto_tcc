@@ -13,6 +13,11 @@ spacy = "^3.7.5"
 pymongo = "^4.8.0"
 textual = "^0.70.0"
 textual-dev = "^1.5.1"
+matplotlib = "^3.9.1"
+pytesseract = "^0.3.10"
+opencv-python = "^4.10.0.84"
+pdf2image = "^1.17.0"
+pypdf2 = "^3.0.1"
 
 [build-system]
 requires = ["poetry-core"]
