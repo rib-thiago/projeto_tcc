@@ -2,7 +2,8 @@ from projeto.services.paragraph_service import ParagraphService
 from projeto.services.translation_service import TranslationService
 from projeto.models.paragraph import Paragraph
 
-from projeto.utils.validators import ParagraphValidator
+from projeto.utils.paragraph_validator import ParagraphValidator
+
 
 class ParagraphController:
     def __init__(self, mongo_config):
@@ -10,6 +11,7 @@ class ParagraphController:
         self.translation_service = TranslationService(mongo_config)
 
     def insert_paragraphs(self, paragraphs, document_id):
+        
         for num_paragraph, content in enumerate(paragraphs):
             paragraph = Paragraph(document_id=document_id, content=content, num_paragraph=num_paragraph + 1)
             

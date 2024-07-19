@@ -31,4 +31,3 @@ class Paragraph:
             translated_content=para_dict.get('translated_content'),
             translated=para_dict.get('translated')
         )
-

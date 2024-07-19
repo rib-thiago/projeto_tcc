@@ -48,13 +48,3 @@ class Document:
             text=doc_dict.get('text'),
             paragraphs=doc_dict.get('paragraphs')
         )
-
-
-
-
-
-
-
-
-
-

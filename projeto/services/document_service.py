@@ -1,7 +1,7 @@
 from projeto.persistence.mongodb.document_repository_impl import DocumentRepository
 from projeto.persistence.mongodb.paragraph_repository_impl import ParagraphRepository
 
-from projeto.utils.validators import DocumentValidator
+from projeto.utils.document_validators import DocumentValidator
 
 
 class DocumentService:

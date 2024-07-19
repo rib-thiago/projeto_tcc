@@ -54,7 +54,7 @@ class DocumentParagraphListView(BaseView):
 
         print("Você já visualizou todos os parágrafos.")
         input("\nPressione Enter para voltar aos detalhes do documento.")
-        return self.view_manager.get_view('DocumentDetailView', self.documento)
+        return self.view_manager.get_view('DocumentDetailView', self.documento._id)
 
     def prompt_paragraph_selection(self):
         """ Método para solicitar a seleção de parágrafos do usuário """
